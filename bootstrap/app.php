@@ -18,6 +18,14 @@ $app = new Illuminate\Foundation\Application(
 // Configure writable storage path for Vercel serverless environment
 if (isset($_ENV['VERCEL']) || isset($_ENV['NOW_REGION'])) {
     $app->useStoragePath('/tmp/storage');
+
+    // Redirect Laravel's bootstrap cache paths to writable /tmp
+    $_ENV['APP_SERVICES_CACHE'] = '/tmp/storage/bootstrap/cache/services.php';
+    $_ENV['APP_PACKAGES_CACHE'] = '/tmp/storage/bootstrap/cache/packages.php';
+    $_ENV['APP_CONFIG_CACHE'] = '/tmp/storage/bootstrap/cache/config.php';
+    $_ENV['APP_ROUTES_CACHE'] = '/tmp/storage/bootstrap/cache/routes.php';
+    $_ENV['APP_EVENTS_CACHE'] = '/tmp/storage/bootstrap/cache/events.php';
+
     $storageDirs = [
         '/tmp/storage',
         '/tmp/storage/app',
@@ -27,6 +35,8 @@ if (isset($_ENV['VERCEL']) || isset($_ENV['NOW_REGION'])) {
         '/tmp/storage/framework/sessions',
         '/tmp/storage/framework/views',
         '/tmp/storage/logs',
+        '/tmp/storage/bootstrap',
+        '/tmp/storage/bootstrap/cache',
     ];
     foreach ($storageDirs as $dir) {
         if (!is_dir($dir)) {
